@@ -23,7 +23,6 @@ public class Main {
         System.out.println(white);
         System.out.println(blue);
     }
-
     public static void solve(int[][] Map,int row, int col,int len)
     {
         int i=0,j=0,length = Map.length,val = Map[row][col];
