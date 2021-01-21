@@ -31,7 +31,6 @@ public class Main {
         int i = 0;
 
         st.push(0);
-
         for (i = 1; i < N; i++) {
             while (!st.isEmpty() && arr[st.peek()] < arr[i])
                 ans[st.pop()] = arr[i];
