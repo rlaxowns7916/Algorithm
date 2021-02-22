@@ -14,3 +14,4 @@ if dp[n] == n:
     print(-1)
 else:
     print(dp[n])
+    
