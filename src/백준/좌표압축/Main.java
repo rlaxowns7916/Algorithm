@@ -3,41 +3,34 @@ package 백준.좌표압축;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        StringTokenizer st;
         StringBuilder sb = new StringBuilder();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        Map<Integer, List<Integer>> store = new HashMap();
+        Map<Integer, Integer> dup = new HashMap<>();
 
-        int N = Integer.parseInt(br.readLine()), i = 0, j = 0;
-        int[] result = new int[N];
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(br.readLine()), i = 0, cnt = 0;
+        int[] origin = new int[N], copy;
 
-        /**
-         * Hashmap에 Value를 키값으로 중복 Count
-         */
+        st = new StringTokenizer(br.readLine());
+
+        for (i = 0; i < N; i++)
+            origin[i] = Integer.parseInt(st.nextToken());
+        copy = origin.clone();
+        Arrays.sort(copy);
+
         for (i = 0; i < N; i++) {
-            int value = Integer.parseInt(st.nextToken());
-            if (!store.containsKey(value))
-                store.put(value, new ArrayList<>());
-            store.get(value).add(i);
-        }
-        /**
-         * Key값으로 정렬한 리스트
-         */
-        List<Integer> orderedValue = store.keySet().stream().sorted((o1, o2) -> o2 - o1).collect(Collectors.toList());
-
-        for (i = 0; i < orderedValue.size(); i++) {
-            int key = orderedValue.get(i);
-            for (int idx : store.get(key))
-                result[idx] = orderedValue.size() - i - 1;
+            if (!dup.containsKey(copy[i]))
+                dup.put(copy[i], cnt++);
         }
         for (i = 0; i < N; i++)
-            sb.append(result[i]).append(" ");
-
+            sb.append(dup.get(origin[i])).append(" ");
         System.out.println(sb.toString());
     }
 }
