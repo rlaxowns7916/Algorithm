@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class Main {
+public class Main1 {
     public static int N=0,count=0;
     public static int[] record;
     public static void main(String[] args) throws IOException {
