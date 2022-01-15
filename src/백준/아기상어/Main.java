@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
@@ -51,7 +50,7 @@ public class Main {
         int size = 0, turn = 0;
         boolean[][] visit = new boolean[N][N];
         Queue<Point> queue = new LinkedList<>();
-        PriorityQueue<Point> candidate = new PriorityQueue<>();
+        Point candidate = null;
 
         Point now = shark.point;
         queue.add(now);
@@ -71,44 +70,43 @@ public class Main {
 
                     if (nextX >= 0 && nextY >= 0 && nextX < N && nextY < N && !visit[nextX][nextY] && map[nextX][nextY] <= shark.level) {
                         Point next = new Point(nextX, nextY);
-                        if (map[nextX][nextY] != 0 && map[nextX][nextY] < shark.level) {
-                            candidate.add(next);
-                        }
+                        if (map[nextX][nextY] != 0 && map[nextX][nextY] < shark.level && isPromising(next, candidate))
+                            candidate = next;
                         visit[nextX][nextY] = true;
                         queue.add(next);
                     }
                 }
             }
-            if (!candidate.isEmpty())
+            if (candidate != null)
                 break;
         }
 
-        if (!candidate.isEmpty()) {
-            now = candidate.poll();
-            shark.point = now;
+        if (candidate != null) {
+            shark.point = candidate;
             shark.eat();
-            map[now.x][now.y] = 0;
-
+            map[candidate.x][candidate.y] = 0;
             return turn;
         }
         return -1;
     }
 
-    static class Point implements Comparable<Point> {
+    public static boolean isPromising(Point next, Point candidate) {
+        if (candidate == null)
+            return true;
+        else {
+            if (next.x < candidate.x)
+                return true;
+            else return next.x == candidate.x && next.y < candidate.y;
+        }
+    }
+
+    static class Point {
         int x = 0;
         int y = 0;
 
         public Point(int x, int y) {
             this.x = x;
             this.y = y;
-        }
-
-        @Override
-        public int compareTo(Point o) {
-            int diff = this.x - o.x;
-            if (diff == 0)
-                return this.y - o.y;
-            return diff;
         }
     }
 
