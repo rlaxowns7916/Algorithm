@@ -3,6 +3,7 @@ package 백준.파일합치기;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
@@ -19,7 +20,7 @@ public class Main {
         StringBuilder sb = new StringBuilder();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         T = Integer.parseInt(br.readLine());
-
+        String[] list = new String[]{"Hello", "World"};
         for (i = 0; i < T; i++) {
             K = Integer.parseInt(br.readLine());
             st = new StringTokenizer(br.readLine());
