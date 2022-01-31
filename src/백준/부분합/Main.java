@@ -24,18 +24,14 @@ public class Main {
         for (int i = 0; i < N; i++)
             map[i] = Integer.parseInt(st.nextToken());
 
-        while (left < N || right < N) {
-            if (right < N) {
-                if (left == right || sum < S) {
-                    sum += map[right++];
-                } else {
-                    len = Math.min(right - left, len);
-                    sum -= map[left++];
-                }
-            } else {
-                if (sum >= S)
-                    len = Math.min(right - left, len);
+        while (true) {
+            if (sum >= S) {
+                len = Math.min(len, right - left);
                 sum -= map[left++];
+            } else {
+                if (right == N)
+                    break;
+                sum += map[right++];
             }
         }
         len = len == Integer.MAX_VALUE ? 0 : len;
