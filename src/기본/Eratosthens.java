@@ -18,7 +18,7 @@ public class Eratosthens {
         for (int i = 2; i <= n / 2; i++) {
             if (!primeNum[i])
                 continue;
-            for (int j = i * i; j <= n; j += i) {
+            for (int j = 2* i; j <= n; j += i) {
                 primeNum[j] = false;
             }
         }
