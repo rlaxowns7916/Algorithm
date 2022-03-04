@@ -10,25 +10,24 @@ public class Main {
     public static int N = 0, M = 0;
 
     public static void main(String[] args) throws IOException {
-        int left = 0, right = 0, mid = 0, answer = 0;
+        long left = 0, right = 0, mid = 0, answer = 0;
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
         StringTokenizer st = new StringTokenizer(br.readLine());
         M = Integer.parseInt(br.readLine());
 
-        int[] moneys = new int[N];
+        long[] moneys = new long[N];
         for (int i = 0; i < N; i++)
-            moneys[i] = Integer.parseInt(st.nextToken());
-
-        left = moneys[0];
-        right = moneys[N - 1];
+            moneys[i] = Long.parseLong(st.nextToken());
         Arrays.sort(moneys);
+        left = 1;
+        right = moneys[N - 1];
 
         while (left <= right) {
-            int budget = 0;
+            long budget = 0;
             mid = (left + right) / 2;
 
-            for (int money : moneys) {
+            for (long money : moneys) {
                 if (money <= mid) {
                     budget += money;
                 } else {
