@@ -62,8 +62,10 @@ public class Main2 {
             nowY = now.y;
             nowBroken = now.isBroken;
 
-            if (nowX == N && nowY == M)
-                min = Math.min(min, dist[nowBroken][nowX][nowY]);
+            if (nowX == N && nowY == M) {
+                min = dist[nowBroken][nowX][nowY];
+                break;
+            }
 
             for (int i = 0; i < 4; i++) {
                 nextX = nowX + dx[i];
