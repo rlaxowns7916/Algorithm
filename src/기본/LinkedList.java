@@ -23,7 +23,8 @@ public class LinkedList<T> {
   }
 
 
-  private Node<T> root = null;
+  private Node<T> head = null;
+  private Node<T> tail = null;
 
   public T get(int index) {
     Node<T> target = seaarch(index);
@@ -32,14 +33,11 @@ public class LinkedList<T> {
 
   public T add(T val) {
     Node<T> target = new Node<>(val);
-    if (root == null) {
-      root = target;
+    if (head == null) {
+      head = tail = target;
     } else {
-      Node<T> current = root;
-      while (current.getNext() != null) {
-        current = current.getNext();
-      }
-      current.setNext(target);
+      tail.setNext(target);
+      tail = target;
     }
     return target.getValue();
   }
@@ -49,9 +47,12 @@ public class LinkedList<T> {
     if (index > 0) {
       Node<T> prev = seaarch(index - 1);
       prev.setNext(target);
+      if (tail == prev) {
+        tail = target;
+      }
     } else if (index == 0) {
-      target.setNext(root);
-      root = target;
+      target.setNext(head);
+      head = target;
     } else {
       return null;
     }
@@ -73,7 +74,7 @@ public class LinkedList<T> {
   }
 
   private Node<T> seaarch(int index) {
-    Node<T> current = root;
+    Node<T> current = head;
     for (int i = 0; i < index && current != null; i++) {
       current = current.getNext();
     }
