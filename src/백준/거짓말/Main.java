@@ -9,88 +9,112 @@ import java.util.StringTokenizer;
 public class Main {
 
   public static int N = 0, M = 0;
-  public static int truth = 0;
-
   public static int[] parent;
-  public static boolean[] knowTheTruth;
-
-  public static ArrayList<Integer>[] parties;
-
-  public static void union(int x, int y) {
-    x = find(x);
-    y = find(y);
-
-    if (x != y) {
-      parent[y] = x;
-    }
-  }
-
-  public static int find(int x) {
-    return parent[x] = x == parent[x] ? x : find(parent[x]);
-  }
-
+  public static int[] rank;
+  public static ArrayList<Integer> knowTheTruthOrigin = new ArrayList<>();
+  public static ArrayList<ArrayList<Integer>> parties = new ArrayList<>();
+  public static StringTokenizer st;
+  public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
   public static void main(String[] args) throws IOException {
-    System.out.println(solve());
-  }
 
-  public static int solve() throws IOException {
+    init();
+
     int count = 0;
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    StringTokenizer st = new StringTokenizer(br.readLine());
-
-    N = Integer.parseInt(st.nextToken());
-    M = Integer.parseInt(st.nextToken());
-    parent = new int[N + 1];
-    knowTheTruth = new boolean[N + 1];
-    parties = new ArrayList[M];
-
-    for (int i = 1; i <= N; i++) {
-      parent[i] = i;
-    }
-
-    st = new StringTokenizer(br.readLine());
-    truth = Integer.parseInt(st.nextToken());
-
-    for (int i = 0; i < truth; i++) {
-      knowTheTruth[Integer.parseInt(st.nextToken())] = true;
-    }
-
+    boolean[] knowTheTruth = new boolean[N + 1];
     for (int i = 0; i < M; i++) {
       st = new StringTokenizer(br.readLine());
-      int numOfParticipant = Integer.parseInt(st.nextToken());
-      parties[i] = new ArrayList<>();
+      int participant = Integer.parseInt(st.nextToken());
+      parties.add(new ArrayList<>());
 
-      for (int j = 0; j < numOfParticipant; j++) {
-        parties[i].add(Integer.parseInt(st.nextToken()));
-      }
+      for (int j = 0; j < participant; j++) {
+        int people = Integer.parseInt(st.nextToken());
+        ArrayList<Integer> party = parties.get(i);
 
-      for (int j = 0; j < parties[i].size() - 1; j++) {
-        int a = parties[i].get(j);
-        int b = parties[i].get(j + 1);
-        union(a, b);
-      }
-    }
-
-    for (int i = 1; i <= N; i++) {
-      if (knowTheTruth[i]) {
-        knowTheTruth[find(i)] = true;
+        if (!party.isEmpty()) {
+          union(people, party.get(party.size() - 1));
+        }
+        party.add(people);
       }
     }
 
-    for (int i = 0; i < M; i++) {
-      boolean skip = false;
-      for (int people : parties[i]) {
+    for (int origin : knowTheTruthOrigin) {
+      knowTheTruth[find(origin)] = true;
+    }
+
+    for (ArrayList<Integer> party : parties) {
+      boolean flag = true;
+      for (int people : party) {
         if (knowTheTruth[find(people)]) {
-          skip = true;
+          flag = false;
           break;
         }
       }
-      if (!skip) {
+      if (flag) {
         count++;
       }
     }
+    System.out.println(count);
+  }
 
-    return count;
+  private static void union(int x, int y) {
+    x = find(x);
+    y = find(y);
+
+    if (x == y) {
+      return;
+    }
+
+    if (rank[x] == rank[y]) {
+      if (parent[x] < parent[y]) {
+        parent[y] = x;
+        rank[x] += 1;
+      } else {
+        parent[x] = y;
+        rank[y] += 1;
+      }
+    } else {
+      if (rank[x] < rank[y]) {
+        parent[x] = y;
+      } else {
+        parent[y] = x;
+      }
+    }
+
+  }
+
+  private static int find(int x) {
+    if (x == parent[x]) {
+      return x;
+    } else {
+      return parent[x] = find(parent[x]);
+    }
+  }
+
+  public static void init() throws IOException {
+    int knowTheTruthCount = 0;
+    st = new StringTokenizer(br.readLine());
+
+    N = Integer.parseInt(st.nextToken());
+    M = Integer.parseInt(st.nextToken());
+
+    st = new StringTokenizer(br.readLine());
+    knowTheTruthCount = Integer.parseInt(st.nextToken());
+
+    for (int i = 0; i < knowTheTruthCount; i++) {
+      knowTheTruthOrigin.add(Integer.parseInt(st.nextToken()));
+    }
+    initDisjointSet();
+  }
+
+  private static void initDisjointSet() {
+    parent = new int[N + 1];
+    rank = new int[N + 1];
+    for (int i = 1; i <= N; i++) {
+      parent[i] = i;
+      rank[i] = 1;
+    }
   }
 }
+
+
