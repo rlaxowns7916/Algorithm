@@ -1,22 +1,22 @@
 package 기본;
 
-public class Queue<T> {
+public class MyQueue<T> {
 
   public static void main(String[] args) {
-    Queue<Integer> queue = new Queue<>();
+    MyQueue<Integer> myQueue = new MyQueue<>();
     StringBuilder sb = new StringBuilder();
 
     for (int i = 0; i < 20; i++) {
-      queue.enqueue((int) (Math.random() * 100) + 1);
+      myQueue.enqueue((int) (Math.random() * 100) + 1);
     }
 
-    while (!queue.isEmpty()) {
-      sb.append(queue.dequeue()).append(" ");
+    while (!myQueue.isEmpty()) {
+      sb.append(myQueue.dequeue()).append(" ");
     }
-    System.out.println(queue.isEmpty());
+    System.out.println(myQueue.isEmpty());
     System.out.println(sb);
-    queue.enqueue(18);
-    System.out.println(queue.dequeue());
+    myQueue.enqueue(18);
+    System.out.println(myQueue.dequeue());
   }
 
   private Node<T> head;

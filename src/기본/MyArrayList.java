@@ -2,20 +2,20 @@ package 기본;
 
 import java.util.Arrays;
 
-public class ArrayList<T> {
+public class MyArrayList<T> {
 
   public static void main(String[] args) {
-    ArrayList<Integer> arrayList = new ArrayList<>();
+    MyArrayList<Integer> myArrayList = new MyArrayList<>();
 
     for (int i = 0; i < 20; i++) {
-      arrayList.add(i);
+      myArrayList.add(i);
     }
-    arrayList.add(1, 6);
-    arrayList.add(2, 6);
+    myArrayList.add(1, 6);
+    myArrayList.add(2, 6);
     for (int i = 0; i < 20; i++) {
-      System.out.println(arrayList.get(i));
+      System.out.println(myArrayList.get(i));
     }
-    System.out.println(arrayList.getSize());
+    System.out.println(myArrayList.getSize());
   }
 
 
