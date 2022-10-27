@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -80,36 +79,13 @@ public class Main {
     nextY = emptyY + dy[dir];
 
     if (nextX >= 0 && nextX < 3 && nextY >= 0 && nextY < 3) {
-      int[][] map = numberToMap(number);
-      map[emptyX][emptyY] = map[nextX][nextY];
-      map[nextX][nextY] = 9;
-      return mapToNumber(map);
+      char[] numbers = str.toCharArray();
+      numbers[emptyX * 3 + emptyY] = numbers[nextX * 3 + nextY];
+      numbers[nextX * 3 + nextY] = '9';
+
+      return Integer.parseInt(new String(numbers));
     } else {
       return -1;
     }
-
-  }
-
-  public int mapToNumber(int[][] map) {
-    StringBuilder sb = new StringBuilder();
-
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
-        sb.append(map[i][j]);
-      }
-    }
-    return Integer.parseInt(sb.toString());
-  }
-
-  public int[][] numberToMap(int number) {
-    int[][] map = new int[3][3];
-    String string = String.valueOf(number);
-
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
-        map[i][j] = string.charAt(3 * i + j) - '0';
-      }
-    }
-    return map;
   }
 }

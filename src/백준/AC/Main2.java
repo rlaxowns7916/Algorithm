@@ -3,75 +3,70 @@ package 백준.AC;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 public class Main2 {
-    public static int T = 0;
 
-    public static void main(String[] args) throws IOException {
-        StringTokenizer st;
-        StringBuilder sb = new StringBuilder();
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        T = Integer.parseInt(br.readLine());
+  public static int T = 0;
 
-        while (T-- > 0) {
-            boolean flag = true;
-            boolean isOperated = true;
-            String input = br.readLine();
-            int N = Integer.parseInt(br.readLine());
-            String nums = br.readLine();
-            ArrayList<Integer> numbers = new ArrayList<>();
+  public static void main(String[] args) throws IOException {
+    StringBuilder sb = new StringBuilder();
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    T = Integer.parseInt(br.readLine());
 
-            if (N > 0) {
-                st = new StringTokenizer(nums.substring(1, nums.length() - 1), ",");
-                for (int i = 0; i < N; i++)
-                    numbers.add(Integer.parseInt(st.nextToken()));
-            }
+    while (T-- > 0) {
+      boolean isReverse = false;
+      boolean isError = false;
+      Deque<String> element = new LinkedList<>();
 
-            for (int i = 0; i < input.length() && isOperated; i++) {
-                if (input.charAt(i) == 'R') {
-                    flag = !flag;
-                } else {
-                    isOperated = remove(flag, numbers);
-                }
-            }
-            if (isOperated)
-                sb.append("[").append(print(flag, numbers)).append("]").append("\n");
-            else
-                sb.append("error").append("\n");
+      String command = br.readLine();
+      int size = Integer.parseInt(br.readLine());
+
+      String input = br.readLine();
+      StringTokenizer st = new StringTokenizer(input.substring(1, input.length() - 1), ",");
+      for (int i = 0; i < size; i++) {
+
+        element.addLast(st.nextToken());
+      }
+
+      for (int i = 0; i < command.length(); i++) {
+        char ch = command.charAt(i);
+        if (ch == 'R') {
+          isReverse = !isReverse;
+        } else {
+          if (element.isEmpty()) {
+            sb.append("error");
+            isError = true;
+            break;
+          }
+          else if (isReverse) {
+            element.removeLast();
+          } else {
+            element.removeFirst();
+          }
         }
-        System.out.println(sb);
-    }
+      }
 
-    public static String print(boolean flag, ArrayList<Integer> numbers) {
-        int size = numbers.size();
-        StringBuilder sb = new StringBuilder();
-
-        if (!numbers.isEmpty()) {
-            if (flag) {
-                for (Integer number : numbers)
-                    sb.append(number).append(",");
-            } else {
-                for (int i = size - 1; i >= 0; i--)
-                    sb.append(numbers.get(i)).append(",");
-            }
-            sb.deleteCharAt(sb.lastIndexOf(","));
+      if (!isError) {
+        sb.append("[");
+        if (isReverse) {
+          while (!element.isEmpty()) {
+            sb.append(element.removeLast()).append(",");
+          }
+        } else {
+          while (!element.isEmpty()) {
+            sb.append(element.removeFirst()).append(",");
+          }
         }
-        return sb.toString();
-    }
-
-    public static boolean remove(boolean flag, ArrayList<Integer> numbers) {
-        int size = numbers.size();
-
-        if (size == 0)
-            return false;
-        else {
-            if (flag)
-                numbers.remove(0);
-            else
-                numbers.remove(size - 1);
-            return true;
+        if (sb.charAt(sb.length() - 1) == ',') {
+          sb.deleteCharAt(sb.lastIndexOf(","));
         }
+        sb.append("]");
+      }
+      sb.append("\n");
     }
+    System.out.println(sb.deleteCharAt(sb.length() - 1));
+  }
 }
