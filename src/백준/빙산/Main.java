@@ -8,121 +8,122 @@ import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-    public static int N = 0, M = 0;
-    public static int[][] map;
-    public static int[] xDirection = {-1, 0, 1, 0};
-    public static int[] yDirection = {0, 1, 0, -1};
-    public static Queue<Point> ices = new LinkedList<>();
 
-    public static void main(String[] args) throws IOException {
-        int i = 0, j = 0;
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
+  public static int[][] map;
+  public static int N = 0, M = 0;
+  public static int[] dx = {-1, 0, 1, 0};
+  public static int[] dy = {0, 1, 0, -1};
 
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
 
-        map = new int[N][M];
+    N = Integer.parseInt(st.nextToken());
+    M = Integer.parseInt(st.nextToken());
 
-        for (i = 0; i < N; i++) {
-            st = new StringTokenizer(br.readLine());
-            for (j = 0; j < M; j++) {
-                map[i][j] = Integer.parseInt(st.nextToken());
-                if (map[i][j] != 0)
-                    ices.add(new Point(i, j));
+    map = new int[N][M];
+
+    for (int i = 0; i < N; i++) {
+      st = new StringTokenizer(br.readLine());
+      for (int j = 0; j < M; j++) {
+        map[i][j] = Integer.parseInt(st.nextToken());
+      }
+    }
+    System.out.println(melting());
+  }
+
+  public static int melting() {
+    int turn = 0;
+    int nextX = 0, nextY = 0;
+    boolean iceExist = false;
+
+    if (isSeparate(map)) {
+      return 0;
+    }
+
+    while (true) {
+      turn++;
+      iceExist = false;
+      int[][] nextMap = new int[N][M];
+      for (int i = 0; i < N; i++) {
+        for (int j = 0; j < M; j++) {
+          if (map[i][j] > 0) {
+            int nearSea = 0;
+            iceExist = true;
+            for (int k = 0; k < 4; k++) {
+              nextX = i + dx[k];
+              nextY = j + dy[k];
+
+              if (nextX >= 0 && nextY >= 0 && nextX < N && nextY < M && map[nextX][nextY] == 0) {
+                nearSea++;
+              }
             }
+            nextMap[i][j] = Math.max(0, map[i][j] - nearSea);
+          }
         }
-        System.out.println(solve());
+      }
+      if (!iceExist) {
+        return 0;
+      } else if (isSeparate(nextMap)) {
+        break;
+      } else {
+        map = nextMap;
+      }
     }
+    return turn;
+  }
 
-    public static int solve() {
-        int level = 0;
-        while (!ices.isEmpty() && !isSeperated()) {
-            level++;
-            melting();
+  public static boolean isSeparate(int[][] nextMap) {
+    boolean isFirst = true;
+    boolean[][] visit = new boolean[N][M];
+    for (int i = 0; i < N; i++) {
+      for (int j = 0; j < M; j++) {
+        if ((nextMap[i][j] > 0) && !visit[i][j]) {
+          if (isFirst) {
+            bfs(nextMap, visit, i, j);
+            isFirst = false;
+          } else {
+            return true;
+          }
         }
-        if (ices.isEmpty())
-            return 0;
-        else
-            return level;
+      }
     }
+    return false;
+  }
 
-    public static int[][] mapCopy() {
-        int[][] copiedMap = new int[N][M];
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++)
-                copiedMap[i][j] = map[i][j];
+  public static void bfs(int[][] nextMap, boolean[][] visit, int x, int y) {
+    int nowX = 0, nowY = 0, nextX = 0, nextY = 0;
+    Queue<Point> queue = new LinkedList<>();
+    visit[x][y] = true;
+    queue.add(new Point(x, y));
+
+    while (!queue.isEmpty()) {
+      Point now = queue.poll();
+
+      nowX = now.x;
+      nowY = now.y;
+
+      for (int i = 0; i < 4; i++) {
+        nextX = nowX + dx[i];
+        nextY = nowY + dy[i];
+
+        if (nextX >= 0 && nextX < N && nextY >= 0 && nextY < M && nextMap[nextX][nextY] > 0
+            && !visit[nextX][nextY]) {
+          visit[nextX][nextY] = true;
+          queue.add(new Point(nextX, nextY));
         }
-        return copiedMap;
+      }
     }
-
-    public static boolean isSeperated() {
-        int iceCount = 0;
-        int directionIndex = 0;
-        int nextX = 0, nextY = 0;
-        int x = 0, y = 0;
-        Queue<Point> searchingIce = new LinkedList<>();
-        boolean[][] visit = new boolean[N][M];
-
-        Point currentIce = ices.peek();
-        searchingIce.add(currentIce);
-        visit[currentIce.x][currentIce.y] = true;
-
-        while (!searchingIce.isEmpty()) {
-            iceCount++;
-            currentIce = searchingIce.poll();
-            x = currentIce.x;
-            y = currentIce.y;
-
-            for (directionIndex = 0; directionIndex < 4; directionIndex++) {
-                nextX = x + xDirection[directionIndex];
-                nextY = y + yDirection[directionIndex];
-
-                if (nextX >= 0 && nextX < N && nextY >= 0 && nextY < M && map[nextX][nextY] > 0 && !visit[nextX][nextY]) {
-                    visit[nextX][nextY] = true;
-                    searchingIce.add(new Point(nextX, nextY));
-                }
-            }
-        }
-        return iceCount != ices.size();
-    }
-
-    public static void melting() {
-        int i = 0;
-        int size = 0;
-        int directionIndex = 0;
-        int nextX = 0, nextY = 0;
-        int x = 0, y = 0;
-        int[][] copiedMap = mapCopy();
-        Point ice;
-        size = ices.size();
-        for (i = 0; i < size; i++) {
-            ice = ices.poll();
-            x = ice.x;
-            y = ice.y;
-
-            for (directionIndex = 0; directionIndex < 4; directionIndex++) {
-                nextX = x + xDirection[directionIndex];
-                nextY = y + yDirection[directionIndex];
-
-                if (nextX >= 0 && nextX < N && nextY >= 0 && nextY < M && map[nextX][nextY] == 0)
-                    copiedMap[x][y]--;
-                if (copiedMap[x][y] == 0)
-                    break;
-            }
-            if (copiedMap[x][y] > 0)
-                ices.add(new Point(x, y));
-        }
-        map = copiedMap;
-    }
+  }
 }
 
 class Point {
-    int x = 0;
-    int y = 0;
 
-    public Point(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
+  int x = 0;
+  int y = 0;
+
+  public Point(int x, int y) {
+    this.x = x;
+    this.y = y;
+  }
 }
