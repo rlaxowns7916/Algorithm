@@ -1,0 +1,15 @@
+-- 코드를 입력하세요
+SELECT
+    fp.PRODUCT_ID,fp.PRODUCT_NAME, SUM(fp.PRICE * fo.AMOUNT) as TOTAL_SALES
+FROM
+    FOOD_PRODUCT fp
+        JOIN
+    FOOD_ORDER fo
+    ON
+            fp.PRODUCT_ID = fo.PRODUCT_ID
+WHERE
+        DATE_FORMAT(fo.PRODUCE_DATE,"%Y-%m")  = "2022-05"
+GROUP BY
+    fp.PRODUCT_ID
+ORDER BY
+    SUM(fp.PRICE * fo.AMOUNT) DESC,PRODUCT_ID;
