@@ -3,36 +3,33 @@ package 백준.카드정렬하기;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.PriorityQueue;
 
-public class Main3 {
-    public static int N = 0;
-    public static List<Integer> numbers = new ArrayList<>();
-
+public class Main3{
+    public static int N=0;
     public static void main(String[] args) throws IOException {
+        int result=0;
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
         N = Integer.parseInt(br.readLine());
 
-        for (int i = 0; i < N; i++)
-            numbers.add(Integer.parseInt(br.readLine()));
-        System.out.println(sum());
-    }
-
-    public static int sum() {
-        int num1 = 0, num2 = 0, sum = 0;
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
-        pq.addAll(numbers);
-
-        while (true) {
-            num1 = pq.poll();
-            if (pq.isEmpty())
-                break;
-            num2 = pq.poll();
-            sum += (num1 + num2);
-            pq.add(num1 + num2);
+        for(int i=0;i<N;i++){
+            pq.add(Integer.parseInt(br.readLine()));
         }
-        return sum;
+
+        while(true){
+            int tmp =0;
+            if(pq.size() == 1){
+                break;
+            }else{
+                int num1 = pq.poll();
+                int num2 = pq.poll();
+
+                tmp = num1+num2;
+                result += tmp;
+                pq.add(tmp);
+            }
+        }
+        System.out.println(result);
     }
 }
