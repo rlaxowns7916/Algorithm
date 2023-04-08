@@ -3,75 +3,60 @@ package 백준.펠린드롬만들기;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Main {
 
-  public static Map<Character, Node> map = new LinkedHashMap<>();
-
   public static void main(String[] args) throws IOException {
-    boolean isPalindrome = true;
-    StringBuilder sb = new StringBuilder();
-
+    int[] alphabets = new int[26];
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     String input = br.readLine();
 
     for (int i = 0; i < input.length(); i++) {
       char chr = input.charAt(i);
-
-      if (!map.containsKey(chr)) {
-        map.put(chr, new Node(chr, 0));
-      }
-      map.get(chr).increase();
+      alphabets[chr - 'A']++;
     }
 
-    Character midChar = null;
-    List<Node> nodes = map.values().stream().sorted().collect(Collectors.toList());
+    System.out.println(solve(input, alphabets));
+  }
 
-    for (Node node : nodes) {
-      if (node.count % 2 == 1) {
-        if (midChar != null) {
-          isPalindrome = false;
-          break;
-        } else {
-          midChar = node.chr;
+  public static String solve(String input, int[] alphabets) {
+    StringBuilder sb = new StringBuilder();
+    int oddIndex = -1;
+    if (input.length() % 2 == 1) {
+      for (int i=0;i < alphabets.length;i++) {
+        if (alphabets[i] % 2 == 1) {
+          if (oddIndex != -1) {
+            return "I'm Sorry Hansoo";
+          } else {
+            oddIndex = i;
+          }
         }
       }
-      sb.append(String.valueOf(node.chr).repeat(Math.max(0, node.count / 2)));
-    }
-    if (isPalindrome) {
-      String origin = sb.toString();
-      String reverse = sb.reverse().toString();
-      if (midChar != null) {
-        System.out.println(origin + midChar + reverse);
-      } else {
-        System.out.println(origin + reverse);
-      }
     } else {
-      System.out.println("I'm Sorry Hansoo");
+      for (int alphabet : alphabets) {
+        if (alphabet % 2 == 1) {
+          return "I'm Sorry Hansoo";
+        }
+      }
     }
-  }
-}
 
-class Node implements Comparable<Node> {
+    for (int i = 0; i < alphabets.length; i++) {
+      if (alphabets[i] == 0) {
+        continue;
+      } else if (alphabets[i] % 2 == 1) {
+        oddIndex = i;
+      }
+      sb.append(String.valueOf((char) (i + 'A')).repeat(alphabets[i] / 2));
 
-  char chr;
-  int count;
+    }
 
-  public Node(char chr, int count) {
-    this.chr = chr;
-    this.count = count;
-  }
+    String origin = sb.toString();
+    String reverse = sb.reverse().toString();
 
-  public void increase() {
-    this.count++;
-  }
-
-  @Override
-  public int compareTo(Node o) {
-    return this.chr - o.chr;
+    if (oddIndex == -1) {
+      return origin + reverse;
+    } else {
+      return origin + (char) (oddIndex + 'A') + reverse;
+    }
   }
 }
