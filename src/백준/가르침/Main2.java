@@ -6,71 +6,71 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main2 {
-    public static int N = 0, K = 0, max = 0;
-    public static String[] vocas;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        Set<Character> uniqueAlphabet = new HashSet<>();
+  public static int N = 0, K = 0;
+  public static int max = 0;
+  public static Set<Integer> alphabets = new LinkedHashSet<>();
+  public static List<String> words = new ArrayList<>();
 
-        N = Integer.parseInt(st.nextToken());
-        K = Integer.parseInt(st.nextToken());
-        vocas = new String[N];
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
 
-        for (int i = 0; i < N; i++) {
-            vocas[i] = br.readLine();
-            for (int j = 0; j < vocas[i].length(); j++) {
-                char ch = vocas[i].charAt(j);
-                if (!isEssential(ch))
-                    uniqueAlphabet.add(ch);
-            }
+    int alphabetCount = 0;
+    N = Integer.parseInt(st.nextToken());
+    K = Integer.parseInt(st.nextToken());
+    boolean[] visit = new boolean[26];
+
+    if (K < 5) {
+      System.out.println(0);
+      return;
+    }
+    visit['a' - 'a'] = visit['n' - 'a'] = visit['t' - 'a'] = visit['i' - 'a'] = visit['c'
+        - 'a'] = true;
+
+    for (int i = 0; i < N; i++) {
+      String input = br.readLine();
+      for (int j = 0; j < input.length(); j++) {
+        if (alphabets.add(input.charAt(j) - 'a')) {
+          alphabetCount++;
         }
-
-        List<Character> chosenAlphabet = new ArrayList<>(uniqueAlphabet);
-        boolean[] visit = new boolean[chosenAlphabet.size()];
-
-        if (K >= 5)
-            comb(chosenAlphabet.size(), 0, K - 5, 0, chosenAlphabet, visit);
-
-        System.out.println(max);
+      }
+      words.add(input);
     }
 
-    public static boolean isEssential(char ch) {
-        return ch == 'a' || ch == 'n' || ch == 't' || ch == 'i' || ch == 'c';
+    if (K >= alphabetCount) {
+      System.out.println(N);
+    } else {
+      solve(5, 0, visit);
+      System.out.println(max);
     }
+  }
 
-    public static void comb(int total, int index, int target, int pick, List<Character> chosenAlphabet, boolean[] visit) {
-        if (target == pick || pick == total) {
-            boolean[] alphabet = new boolean[26];
-            for (int i = 0; i < visit.length; i++) {
-                if (visit[i])
-                    alphabet[chosenAlphabet.get(i) - 'a'] = true;
-            }
-            max = Math.max(max, canRead(alphabet));
-        } else if (total > index) {
-            visit[index] = true;
-            comb(total, index + 1, target, pick + 1, chosenAlphabet, visit);
-            visit[index] = false;
-            comb(total, index + 1, target, pick, chosenAlphabet, visit);
+  public static void solve(int now, int depth, boolean[] visit) {
+    if (now == K) {
+      int count = 0;
+      for (String word : words) {
+        boolean canRead = true;
+        for (int j = 4; j < word.length() - 4; j++) {
+          if (!visit[word.charAt(j) - 'a']) {
+            canRead = false;
+            break;
+          }
         }
-    }
-
-    public static int canRead(boolean[] alphabets) {
-        int readCount = 0;
-
-        for (String voca : vocas) {
-            boolean flag = true;
-            for (int i = 0; i < voca.length(); i++) {
-                char ch = voca.charAt(i);
-                if (!alphabets[ch - 'a'] && !isEssential(ch) ) {
-                    flag = false;
-                    break;
-                }
-            }
-            if (flag)
-                readCount++;
+        if (canRead) {
+          count++;
         }
-        return readCount;
+      }
+      max = Math.max(max, count);
+    } else if (depth >= visit.length) {
+      return;
+    } else {
+      if (alphabets.contains(depth) && !visit[depth]) {
+        visit[depth] = true;
+        solve(now + 1, depth + 1, visit);
+        visit[depth] = false;
+      }
+      solve(now, depth + 1, visit);
     }
+  }
 }
