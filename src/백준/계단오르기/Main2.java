@@ -5,28 +5,26 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main2 {
-    public static int[] stairs;
-    public static int[] dp;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine());
-        stairs = new int[N + 1];
-        dp = new int[N + 1];
+  public static void main(String[] args) throws IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    int N = Integer.parseInt(br.readLine());
+    int[] stairs = new int[301];
+    int[][] dp = new int[2][301];
 
-        for (int i = 1; i <= N; i++)
-            stairs[i] = Integer.parseInt(br.readLine());
-        System.out.println(getMaxScore(N));
+    for (int i = 1; i <= N; i++) {
+      stairs[i] = Integer.parseInt(br.readLine());
     }
 
-    public static int getMaxScore(int score) {
-        if (score <= 0)
-            return 0;
-        else if (dp[score] != 0)
-            return dp[score];
-        else {
-            dp[score] = Math.max(getMaxScore(score - 2), getMaxScore(score - 3) + stairs[score - 1]) + stairs[score];
-            return dp[score];
-        }
+    dp[0][1] = dp[1][1] = stairs[1];
+    dp[0][2] = stairs[1] + stairs[2];
+    dp[1][2] = stairs[2];
+
+    for(int i=3;i<=N;i++){
+      dp[0][i] = dp[1][i-1] +stairs[i];
+      dp[1][i] =  Math.max(dp[0][i-2], dp[1][i-2])+stairs[i];
     }
+
+    System.out.println(Math.max(dp[0][N], dp[1][N]));
+  }
 }
