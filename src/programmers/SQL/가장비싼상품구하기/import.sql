@@ -1,0 +1,1 @@
+SELECT max(proce) as MAX_PRICE FROM PRODCUT;
