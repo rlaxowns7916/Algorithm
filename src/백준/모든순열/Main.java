@@ -5,36 +5,33 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
-    public static StringBuilder sb = new StringBuilder();
-    public static int N = 0, count = 0, factorial = 0;
-    public static int[] store;
-    public static boolean[] visit;
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        N = Integer.parseInt(br.readLine());
+        int N = Integer.parseInt(br.readLine());
 
-        store = new int[N];
-        visit = new boolean[N];
-        for (int i = 0; i < N; i++)
-            store[i] = i + 1;
+        int[] numbers = new int[N];
+        boolean[] visit = new boolean[N];
+        StringBuilder sb = new StringBuilder();
 
-        perm(0);
+        solve(0,numbers,visit, sb);
         System.out.println(sb);
+
     }
 
-    public static void perm(int count) {
-        if (count == N) {
-            for (int i = 0; i < N; i++)
-                sb.append(store[i]).append(" ");
-            sb.append("\n");
-        }
-        for (int i = 0; i < N; i++) {
-            if (!visit[i]) {
-                visit[i] = true;
-                store[count] = i + 1;
-                perm(count+ 1);
-                visit[i] = false;
+    private static void solve(int depth, int[] numbers, boolean[] visit,StringBuilder answer){
+        if(depth == numbers.length){
+            for(int number : numbers){
+                answer.append(number).append(" ");
+            }
+            answer.append("\n");
+        }else{
+            for(int i = 0; i<numbers.length;i++){
+                if(!visit[i]){
+                    visit[i] = true;
+                    numbers[depth] = i+1;
+                    solve(depth+1,numbers,visit,answer);
+                    visit[i]=false;
+                }
             }
         }
     }
