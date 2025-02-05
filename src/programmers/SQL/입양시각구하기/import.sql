@@ -1,17 +1,19 @@
+WITH RECURSIVE hours AS(
+    SELECT 0 AS HOUR
+UNION ALL
+SELECT HOUR + 1 from hours where HOUR < 23
+    )
+
 SELECT
-    h.num as HOUR,
-    COUNT(ao.ANIMAL_ID) as COUNT
+    hours.HOUR as HOUR,
+    IFNULL(count(ANIMAL_ID),0) as COUNT
 FROM
-    ANIMAL_OUTS as ao
-        RIGHT OUTER JOIN(
-        WITH RECURSIVE hours as(
-            SELECT 0 AS num
-            UNION ALL
-            SELECT num+1 FROM hours WHERE num < 23
-        )
-        SELECT num FROM hours
-    )as h
+    hours
+    LEFT JOIN
+    ANIMAL_OUTS ao
 ON
-    h.num = HOUR(ao.DATETIME)
-GROUP BY
-    h.num
+    hour(ao.DATETIME) = hours.HOUR
+group by
+    hours.HOUR
+order by
+    hours.HOUR
