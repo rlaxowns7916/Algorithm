@@ -4,63 +4,31 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
-public class Main {
-    public static int N = 0;
-    public static class Info implements Comparable<Info>{
-        int index;
-        int weight;
-
-        public Info(int index,int weight){
-            this.index = index;
-            this.weight = weight;
-        }
-
-        @Override
-        public int compareTo(Info o) {
-            return this.weight - o.weight;
-        }
-    }
+public class Main{
+    /**
+     * DP를 이용한 풀이
+     * 각 지점을 갈 수 있을 만큼 씩 다 채워본다.
+     * 그리고 MIN 연산을 통해서 결과적으로 최소한의 비용으로 목적지를 도착하는 방법을 찾는다.
+     */
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int i=0,j=0;
-        N = Integer.parseInt(br.readLine());
-        StringTokenizer st;
-        ArrayList<Integer> edge = new ArrayList<>();
-        PriorityQueue<Info> pq = new PriorityQueue();
+
+        int N = Integer.parseInt(br.readLine()), currentCost = 0;
+        int[] distances = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+        int[] costs = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+        long answer = 0;
 
 
-        st = new StringTokenizer(br.readLine());
-        for(i=0;i<N-1;i++)
-            edge.add(Integer.parseInt(st.nextToken()));
+        currentCost = costs[0];
 
-        st = new StringTokenizer(br.readLine());
-        for(i=0;i<N-1;i++)
-            pq.add(new Info(i,Integer.parseInt(st.nextToken())));
-
-        System.out.println(solve(edge,pq));
-}
-    public static  long solve(ArrayList<Integer> edge,PriorityQueue<Info> pq){
-        long count = 0,length=0,ans=0;
-        int i=0,j=0,index=0,weight=0;
-        boolean[] visit = new boolean[N-1];
-
-        while(!pq.isEmpty() && count != N-1){
-            Info temp = pq.poll();
-            weight = temp.weight;
-            index  = temp.index;
-            length  = 0;
-            for(j=index;j<N-1;j++){
-                if(visit[j])
-                    break;
-                length += edge.get(j);
-                visit[j] = true;
-                count++;
-            }
-            ans += weight*length;
+        for (int i = 0; i < N - 1; i++) { // 마지막 도시는 주유할 필요 없음
+            answer += (long) currentCost * distances[i]; // 현재 최소 비용으로 이동
+            currentCost = Math.min(currentCost, costs[i + 1]); // 최소 기름 가격 업데이트
         }
-        return ans;
+        System.out.print(answer);
     }
 }
