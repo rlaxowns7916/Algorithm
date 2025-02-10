@@ -6,32 +6,23 @@ import java.io.InputStreamReader;
 import java.util.PriorityQueue;
 
 public class Main {
-    public static int N = 0;
-    public static PriorityQueue<Integer> pq = new PriorityQueue<>();
     public static void main(String[] args) throws IOException {
-        int i=0;
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        N = Integer.parseInt(br.readLine());
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        int answer = 0, N = Integer.parseInt(br.readLine());
 
-        for(i=0;i<N;i++)
+        for(int i=0; i<N ; i++){
             pq.add(Integer.parseInt(br.readLine()));
-
-        System.out.println(solve());
-    }
-    public static int solve()
-    {
-        int first=0,second=0,next=0,total=0;
-
-        if(pq.size()>1){
-            while(!pq.isEmpty()){
-                first = pq.poll();
-                second = pq.poll();
-                total += next = first+second;
-                if(pq.isEmpty())
-                    break;
-                pq.add(next);
-            }
         }
-        return total;
+
+        while(pq.size() > 1){
+            int num1 = pq.poll();
+            int num2 = pq.poll();
+
+            answer += (num1 + num2);
+            pq.add(num1 + num2);
+        }
+
+        System.out.print(answer);
     }
 }
